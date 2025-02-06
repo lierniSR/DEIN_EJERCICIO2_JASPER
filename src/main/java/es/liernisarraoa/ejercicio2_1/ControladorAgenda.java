@@ -41,6 +41,38 @@ public class ControladorAgenda implements Initializable {
     public void visualizarInforme(ActionEvent actionEvent) {
         if(grupoRadioButton.getSelectedToggle() == radioButtonPersonas){
             visualizarPersonas();
+        } else if (grupoRadioButton.getSelectedToggle() == radioButtonCalculos) {
+            visualizarCalculos();
+        }
+    }
+
+    private void visualizarCalculos() {
+        try {
+            // Ruta del archivo Jasper (compilado)
+            String reportPath = "C:\\DM2\\DEIN\\ProyectoFXJasper\\Ejercicio2_1\\src\\main\\resources\\es\\liernisarraoa\\ejercicio2_1\\Jasper\\Calculo\\Ejercicio2Calculos.jasper";
+
+            // Cargar el archivo Jasper
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
+
+            // Configurar conexión a la base de datos
+            String dbUrl = "jdbc:mariadb://localhost:3306/agenda";
+            String dbUser  = "root";
+            String dbPassword = "WinRar3009*.";
+
+            Connection connection = DriverManager.getConnection(dbUrl, dbUser , dbPassword);
+
+            // Llenar el informe con datos
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, connection);
+
+            // Mostrar el informe
+            JasperViewer.viewReport(jasperPrint, false);
+
+            // Exportar a PDF (opcional)
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "PDF/reportePersonasCalculos.pdf");
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -70,7 +102,7 @@ public class ControladorAgenda implements Initializable {
             JasperViewer.viewReport(jasperPrint, false);
 
             // Exportar a PDF (opcional)
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "reportePersonas.pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "PDF/reportePersonas.pdf");
 
             connection.close();
         } catch (Exception e) {
